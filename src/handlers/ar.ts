@@ -26,6 +26,16 @@ const isExactMatch = (
   if (titleSearch === title && author === authorSearch) return true;
   if (titleSearch === title && author.includes(authorSearch)) return true;
   if (title.includes(titleSearch) && author.includes(authorSearch)) return true;
+
+  if (author && authorSearch) {
+    const authorArray = author.split(",");
+    const parts = authorArray.filter(part => author.includes(part));
+    if (parts.length === authorArray.length && titleSearch === title)
+      return true;
+    if (parts.length === authorArray.length && title.includes(titleSearch))
+      return true;
+  }
+
   return false;
 };
 
