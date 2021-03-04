@@ -126,7 +126,10 @@ const parseResults = async (
   };
 };
 
+//The Chosen Jerome Karabel
+
 const createSearchQuery = (titleSearch: string, authorSearch: string) => {
+  titleSearch = `${titleSearch} (Unabridged)`;
   return authorSearch ? `${titleSearch} ${authorSearch}` : titleSearch;
 };
 
