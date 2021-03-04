@@ -22,6 +22,10 @@ app.get("/", async (req, res) => {
   res.send(result);
 });
 
+app.get("/heartbeat", async (req, res) => {
+  res.send(true);
+});
+
 // start the Express server
 app.listen(port, () => {
   console.log(`server started at http://localhost:${port}`);
