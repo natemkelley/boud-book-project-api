@@ -3,6 +3,8 @@ import { Express } from "express";
 
 export default (app: Express) => {
   const allowedOrigins = [
+    "https://boud-book-list.web.app/",
+    "http://boud-book-list.web.app/",
     "http://localhost",
     "https://localhost",
     "https://localhost:3000",
