@@ -1,6 +1,7 @@
 import cors from "cors";
+import { Express } from "express";
 
-export default (app: any) => {
+export default (app: Express) => {
   const allowedOrigins = [
     "http://localhost",
     "https://localhost",

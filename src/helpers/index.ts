@@ -1,14 +1,13 @@
-//@ts-ignore
+// @ts-ignore
 import removePunctuation from "remove-punctuation";
-//@ts-ignore
+// @ts-ignore
 import shoetest from "shoetest";
+// @ts-ignore
+import replaceAll from "replaceall";
 
 export const isAuthorEqual = (author: string, searchAuthor: string) => {
   const authorArray = author.split(" ");
   const matchedParts = authorArray.filter(part => searchAuthor.includes(part));
-
-  console.log(authorArray, matchedParts);
-  console.log(author, searchAuthor);
 
   if (author === searchAuthor) return true;
   if (authorArray.length === matchedParts.length) return true;
@@ -17,13 +16,18 @@ export const isAuthorEqual = (author: string, searchAuthor: string) => {
 };
 
 export const isTitleEqual = (title: string, searchTitle: string) => {
+  console.log(title, searchTitle);
   return title === searchTitle;
 };
 
-export const strip = (string: string) => {
-  string = removePunctuation(string);
-  string = shoetest.simplify(string);
-  return string;
+export const strip = (search = "") => {
+  search = removePunctuation(search);
+  search = replaceAll("Unabridged", "", search);
+  search = replaceAll("Abridged", "", search);
+  search = replaceAll("-", " ", search); // short dash
+  search = replaceAll("—", " ", search); // long dash
+  search = shoetest.simplify(search) || "";
+  return search.trim();
 };
 
 export const isExactMatch = (
@@ -51,10 +55,13 @@ export const createSearchQuery = (
   authorSearch: string
 ) => {
   titleSearch = `${titleSearch} (Unabridged)`;
-  return authorSearch ? `${titleSearch} ${authorSearch}` : titleSearch;
+  const searchQuery = authorSearch
+    ? `${titleSearch} ${authorSearch}`
+    : titleSearch;
+  if (!searchQuery) throw new Error("no search query created");
+  return searchQuery;
 };
 
-//The Chosen Jerome Karabel
 function test() {
   let title = "The Chosen";
   let searchTitle = "The Chosen";
@@ -69,6 +76,19 @@ function test() {
   searchAuthor = "J.K. Rowling";
 
   console.log(isExactMatch(searchTitle, title, author, searchAuthor));
-}
 
-//test();
+  title = "Frankenstein (Unabridged)";
+  searchTitle = "Frankenstein";
+  author = "Shelley, Mary";
+  searchAuthor = "Mary Shelley";
+
+  console.log(isExactMatch(searchTitle, title, author, searchAuthor));
+
+  title = "The Count of Monte Cristo (Abridged)";
+  searchTitle = "The Count of Monte-Cristo";
+  author = "Dumas, Alexandre";
+  searchAuthor = "Alexandre Dumas";
+
+  console.log(isExactMatch(searchTitle, title, author, searchAuthor));
+}
+// test();

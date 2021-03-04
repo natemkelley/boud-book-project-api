@@ -1,7 +1,8 @@
-import puppeteer, { Page } from "puppeteer";
+import puppeteer, { Page, Browser } from "puppeteer";
 import { parse as HTMLParser } from "node-html-parser";
 import { ARResult } from "./interfaces";
 import { isExactMatch, createSearchQuery } from "../helpers/index";
+
 const AR_WEBSITE_URL = "https://www.arbookfind.com/";
 
 const QUERY_PARAMETERS = {
@@ -16,27 +17,54 @@ const QUERY_PARAMETERS = {
   searchBtnId: "#ctl00_ContentPlaceHolder1_btnDoIt",
 };
 
+// puppetter vars
+let BROWSER: Browser | null = null;
+
+const createBrowser = async () => {
+  // console.time("create browser");
+  BROWSER = await puppeteer.launch();
+  // console.timeEnd("create browser");
+};
+
+const createPage = async () => {
+  if (!BROWSER) await createBrowser();
+
+  // console.time("create page");
+  const page = await BROWSER.newPage();
+  // console.timeEnd("create page");
+  return page;
+};
+
 const goToSearchPage = async (page: Page) => {
+  // console.time("go to page");
   await page.goto(AR_WEBSITE_URL, {
     waitUntil: "networkidle0",
   });
-  await page.evaluate(() => {
-    (document.getElementById("radTeacher") as any).checked = true;
-  });
-  await page.click("#btnSubmitUserType");
+
+  // handle cookie page
+  if (page.url().includes("UserType.aspx")) {
+    await page.evaluate(() => {
+      (document.getElementById("radTeacher") as any).checked = true;
+    });
+    await page.click("#btnSubmitUserType");
+  }
+  // console.timeEnd("go to page");
   return page;
 };
 
 const performSearch = async (page: Page, search: string) => {
+  // console.time("performSearch");
   await page.waitForSelector(QUERY_PARAMETERS.searchBarId);
   await page.waitForSelector(QUERY_PARAMETERS.searchBtnId);
   await page.type(QUERY_PARAMETERS.searchBarId, search);
   await page.click(QUERY_PARAMETERS.searchBtnId);
   await page.waitForNavigation({ waitUntil: "networkidle0" });
+  // console.timeEnd("performSearch");
   return page;
 };
 
 async function clickOnResult(page: Page) {
+  // console.time("clickOnResult");
   const resultSelector = ".book-result a";
   await page
     .waitForSelector(resultSelector, {
@@ -48,6 +76,7 @@ async function clickOnResult(page: Page) {
 
   await page.click(resultSelector);
   await page.waitForNavigation({ waitUntil: "networkidle0" });
+  // console.timeEnd("clickOnResult");
   return page;
 }
 
@@ -103,45 +132,40 @@ const parseResults = async (
   };
 };
 
-//The Chosen Jerome Karabel
+const closePage = async (page: Page) => {
+  // console.time("close page");
+  await page.close();
+  // console.timeEnd("close page");
+};
+
+export const closeBrowser = async () => {
+  BROWSER && (await BROWSER.close());
+};
 
 export const getARscore = async (
   titleSearch: string,
   authorSearch?: string
 ) => {
-  const browser = await puppeteer.launch();
   try {
+    const date = new Date().toString();
+    // console.time(`started search ${titleSearch} ${date}`);
     const search = createSearchQuery(titleSearch, authorSearch);
-    let page = await browser.newPage();
+    let page = await createPage();
     page = await goToSearchPage(page);
     page = await performSearch(page, search);
     page = await clickOnResult(page);
     const results = await parseResults(page, titleSearch, authorSearch);
-    await browser.close();
+    // console.timeEnd(`started search ${titleSearch} ${date}`);
+    closePage(page);
     return { ...results } as ARResult;
   } catch ({ message }) {
-    await browser.close();
+    // closeBrowser();
     return { error: message } as any;
   }
 };
 
 export default getARscore;
 
-async function test() {
-  let result = await getARscore("East of Eden", "Steinbeck");
-  result && console.log(result.hasResults, result.title, result.points);
-
-  result = await getARscore("East of Eden");
-  result && console.log(result.hasResults, result.title, result.points);
-
-  result = await getARscore("").catch(err => err);
-  result && console.log(result.hasResults, result.title, result.points);
-
-  result = await getARscore("Oliver Twist", "Dickens");
-  result && console.log(result.hasResults, result.title, result.points);
-
-  result = await getARscore("Oliver Twist", "Dickens, Charles");
-  result && console.log(result.hasResults, result.title, result.points);
-}
-
-// test();
+(async () => {
+  createBrowser();
+})();
