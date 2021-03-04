@@ -11,6 +11,9 @@ export default (app: Express) => {
     "http://localhost:3000",
     "http://192.168.1.185:3000",
     "https://192.168.1.185:3000",
+    "http://boudbookscrubber.duckdns.org:3000",
+    "http://boudbookscrubber.duckdns.org",
+    "https://boudbookscrubber.duckdns.org",
   ];
 
   const corsOptionsDelegate = (req: any, callback: any) => {
