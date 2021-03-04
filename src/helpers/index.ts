@@ -16,7 +16,6 @@ export const isAuthorEqual = (author: string, searchAuthor: string) => {
 };
 
 export const isTitleEqual = (title: string, searchTitle: string) => {
-  console.log(title, searchTitle);
   return title === searchTitle;
 };
 
@@ -27,6 +26,7 @@ export const strip = (search = "") => {
   search = replaceAll("-", " ", search); // short dash
   search = replaceAll("—", " ", search); // long dash
   search = shoetest.simplify(search) || "";
+  search = search.toLowerCase();
   return search.trim();
 };
 
@@ -90,5 +90,12 @@ function test() {
   searchAuthor = "Alexandre Dumas";
 
   console.log(isExactMatch(searchTitle, title, author, searchAuthor));
+
+  title = "Moby-Dick, or, The Whale";
+  searchTitle = "Moby-Dick, Or The Whale (Unabridged)";
+  author = "Melville, Herman";
+  searchAuthor = "Herman Melville";
+
+  console.log(isExactMatch(searchTitle, title, author, searchAuthor));
 }
-// test();
+test();
