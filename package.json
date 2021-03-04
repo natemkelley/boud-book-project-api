@@ -15,7 +15,9 @@
     "express": "^4.17.1",
     "html-table-to-json": "^1.0.0",
     "node-html-parser": "^3.0.3",
-    "puppeteer": "^8.0.0"
+    "puppeteer": "^8.0.0",
+    "remove-punctuation": "0.0.4",
+    "shoetest": "^1.0.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.10",

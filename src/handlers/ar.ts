@@ -1,7 +1,7 @@
 import puppeteer, { Page } from "puppeteer";
 import { parse as HTMLParser } from "node-html-parser";
 import { ARResult } from "./interfaces";
-
+import { isExactMatch, createSearchQuery } from "../helpers/index";
 const AR_WEBSITE_URL = "https://www.arbookfind.com/";
 
 const QUERY_PARAMETERS = {
@@ -14,29 +14,6 @@ const QUERY_PARAMETERS = {
   wordCount: "#ctl00_ContentPlaceHolder1_ucBookDetail_lblWordCount",
   searchBarId: "#ctl00_ContentPlaceHolder1_txtKeyWords",
   searchBtnId: "#ctl00_ContentPlaceHolder1_btnDoIt",
-};
-
-const isExactMatch = (
-  titleSearch: string,
-  title: string,
-  author: string,
-  authorSearch: string
-) => {
-  if (titleSearch === title && !authorSearch) return true;
-  if (titleSearch === title && author === authorSearch) return true;
-  if (titleSearch === title && author.includes(authorSearch)) return true;
-  if (title.includes(titleSearch) && author.includes(authorSearch)) return true;
-
-  if (author && authorSearch) {
-    const authorArray = author.split(",");
-    const parts = authorArray.filter(part => author.includes(part));
-    if (parts.length === authorArray.length && titleSearch === title)
-      return true;
-    if (parts.length === authorArray.length && title.includes(titleSearch))
-      return true;
-  }
-
-  return false;
 };
 
 const goToSearchPage = async (page: Page) => {
@@ -127,11 +104,6 @@ const parseResults = async (
 };
 
 //The Chosen Jerome Karabel
-
-const createSearchQuery = (titleSearch: string, authorSearch: string) => {
-  titleSearch = `${titleSearch} (Unabridged)`;
-  return authorSearch ? `${titleSearch} ${authorSearch}` : titleSearch;
-};
 
 export const getARscore = async (
   titleSearch: string,
