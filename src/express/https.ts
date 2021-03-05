@@ -1,24 +1,15 @@
-# Boud Book Scrubber API
+require("dotenv").config();
 
-This API is used to scrub ARs website for their points
+import { Express } from "express";
+import https from "https";
+import http from "http";
+import fs from "fs";
+import os from "os";
 
-## Running TS in Node
+export const certbot = (app: Express) => {
+  // ONLY RUN ON RASPBERRY PI
+  if (os.platform() !== "darwin") return;
 
-`npx ts-node src/foo.ts` or `ts-node src/foo.ts`
-
-## SSL Certificate
-
-1. I followed these instructions up until step 7 https://certbot.eff.org/lets-encrypt/pip-other
-2. Did a manual install for the certifcate making sure to copy the key and path
-
-```
-certbot certonly --manual
-
-```
-
-3. Added key and path to env variable and create a node route
-
-```
   const path = `/.well-known/acme-challenge/${process.env.ENCRYPT_PATH}`;
 
   app.get(path, async (req, res) => {
@@ -27,12 +18,9 @@ certbot certonly --manual
     res.type("txt");
     res.send(secretKeys);
   });
-```
+};
 
-4. Finished the `certbot certonly --manual` process which creates a `pem` inside the folder `/etc/letsencrypt/live/`
-5. Once that has been created you can start an https server using the following
-
-```
+export default (app: Express) => {
   const DEFAULT_PORT = 8080;
   const SECURE_PORT = 8081;
 
@@ -41,7 +29,6 @@ certbot certonly --manual
     console.log("HTTP Server running on port 8080");
   });
 
-  //For raspberry pi only
   if (os.platform() !== "darwin") {
     const websiteURL = process.env.WEBSITE_URL;
     const credentials = {
@@ -55,13 +42,4 @@ certbot certonly --manual
       console.log("HTTPS Server running on port 8081");
     });
   }
-```
-
-## Trouble Shooting
-
-Kill a process on a port (MAC)
-
-```
-lsof -i tcp:8080
-kill -9 ${PID}
-```
+};

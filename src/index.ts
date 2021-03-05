@@ -2,13 +2,12 @@ import express from "express";
 import arScoreHandler from "./handlers/ar";
 import cors from "./express/cors";
 import morgan from "./express/morgan";
-import encrypt from "./express/encrypt";
+import httpsServer, { certbot } from "./express/https";
 
 const app = express();
-const port = 8080; // default port to listen
 
 cors(app);
-encrypt(app);
+certbot(app);
 morgan(app);
 
 app.get("/", async (req, res) => {
@@ -27,7 +26,4 @@ app.get("/heartbeat", async (req, res) => {
   res.send(true);
 });
 
-// start the Express server
-app.listen(port, () => {
-  console.log(`server started at http://localhost:${port}`);
-});
+httpsServer(app);
