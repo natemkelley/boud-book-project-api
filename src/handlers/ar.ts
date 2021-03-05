@@ -17,6 +17,8 @@ const QUERY_PARAMETERS = {
   searchBtnId: "#ctl00_ContentPlaceHolder1_btnDoIt",
 };
 
+const LOG_TIME = false;
+
 // puppetter vars
 let BROWSER: Browser | null = null;
 
@@ -31,22 +33,22 @@ const createBrowser = async () => {
         }
       : {};
 
-  console.time("create browser");
+  if (LOG_TIME) console.time("create browser");
   BROWSER = await puppeteer.launch(options);
-  console.timeEnd("create browser");
+  if (LOG_TIME) console.timeEnd("create browser");
 };
 
 const createPage = async () => {
   if (!BROWSER) await createBrowser();
 
-  console.time("create page");
+  if (LOG_TIME) console.time("create page");
   const page = await BROWSER.newPage();
-  console.timeEnd("create page");
+  if (LOG_TIME) console.timeEnd("create page");
   return page;
 };
 
 const goToSearchPage = async (page: Page) => {
-  console.time("go to page");
+  if (LOG_TIME) console.time("go to page");
   await page.goto(AR_WEBSITE_URL, {
     waitUntil: "networkidle0",
   });
@@ -58,23 +60,23 @@ const goToSearchPage = async (page: Page) => {
     });
     await page.click("#btnSubmitUserType");
   }
-  console.timeEnd("go to page");
+  if (LOG_TIME) console.timeEnd("go to page");
   return page;
 };
 
 const performSearch = async (page: Page, search: string) => {
-  console.time("performSearch");
+  if (LOG_TIME) console.time("performSearch");
   await page.waitForSelector(QUERY_PARAMETERS.searchBarId);
   await page.waitForSelector(QUERY_PARAMETERS.searchBtnId);
   await page.type(QUERY_PARAMETERS.searchBarId, search);
   await page.click(QUERY_PARAMETERS.searchBtnId);
   await page.waitForNavigation({ waitUntil: "networkidle0" });
-  console.timeEnd("performSearch");
+  if (LOG_TIME) console.timeEnd("performSearch");
   return page;
 };
 
 async function clickOnResult(page: Page) {
-  console.time("clickOnResult");
+  if (LOG_TIME) console.time("clickOnResult");
   const resultSelector = ".book-result a";
   await page
     .waitForSelector(resultSelector, {
@@ -86,7 +88,7 @@ async function clickOnResult(page: Page) {
 
   await page.click(resultSelector);
   await page.waitForNavigation({ waitUntil: "networkidle0" });
-  console.timeEnd("clickOnResult");
+  if (LOG_TIME) console.timeEnd("clickOnResult");
   return page;
 }
 
@@ -143,9 +145,9 @@ const parseResults = async (
 };
 
 const closePage = async (page: Page) => {
-  console.time("close page");
+  if (LOG_TIME) console.time("close page");
   await page.close();
-  console.timeEnd("close page");
+  if (LOG_TIME) console.timeEnd("close page");
 };
 
 export const closeBrowser = async () => {
@@ -158,14 +160,14 @@ export const getARscore = async (
 ) => {
   try {
     const date = new Date().toString();
-    // console.time(`started search ${titleSearch} ${date}`);
+    // if(LOG_TIME) console.time(`started search ${titleSearch} ${date}`);
     const search = createSearchQuery(titleSearch, authorSearch);
     let page = await createPage();
     page = await goToSearchPage(page);
     page = await performSearch(page, search);
     page = await clickOnResult(page);
     const results = await parseResults(page, titleSearch, authorSearch);
-    // console.timeEnd(`started search ${titleSearch} ${date}`);
+    // if(LOG_TIME) console.timeEnd(`started search ${titleSearch} ${date}`);
     closePage(page);
     return { ...results } as ARResult;
   } catch ({ message }) {

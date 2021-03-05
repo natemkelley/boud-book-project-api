@@ -24,7 +24,7 @@ export const certbot = (app: Express) => {
 export default (app: Express) => {
   const DEFAULT_PORT = 8080;
   const SECURE_PORT = 8081;
-  const TIMEOUT = 1000 * 60 * 2; //2 minutes
+  const TIMEOUT = 1000 * 60 * 2; // 2 minutes
 
   const httpServer = http.createServer(app);
   httpServer
