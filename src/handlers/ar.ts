@@ -17,21 +17,19 @@ const QUERY_PARAMETERS = {
   searchBtnId: "#ctl00_ContentPlaceHolder1_btnDoIt",
 };
 
-const LOG_TIME = false;
+const LOG_TIME = true;
 
 // puppetter vars
 let BROWSER: Browser | null = null;
 
 const createBrowser = async () => {
-  // ONLY RUN SPECIAL EXECUTABLE ON RASPBERRY PI
-  const options =
-    os.platform() !== "darwin"
-      ? {
-          headless: true,
-          executablePath: "/usr/bin/chromium-browser",
-          args: ["--no-sandbox", "--disable-setuid-sandbox"],
-        }
-      : {};
+  const options = {
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+    ],
+  };
 
   if (LOG_TIME) console.time("create browser");
   BROWSER = await puppeteer.launch(options);
@@ -41,6 +39,7 @@ const createBrowser = async () => {
 const createPage = async () => {
   if (!BROWSER) await createBrowser();
 
+  console.log("trying to create page?");
   if (LOG_TIME) console.time("create page");
   const page = await BROWSER.newPage();
   if (LOG_TIME) console.timeEnd("create page");
