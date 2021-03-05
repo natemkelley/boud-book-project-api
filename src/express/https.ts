@@ -6,9 +6,10 @@ import http from "http";
 import fs from "fs";
 import os from "os";
 
+const IS_RASPBERRY_PI = os.platform() !== "darwin";
+
 export const certbot = (app: Express) => {
-  // ONLY RUN ON RASPBERRY PI
-  if (os.platform() !== "darwin") return;
+  if (IS_RASPBERRY_PI) return;
 
   const path = `/.well-known/acme-challenge/${process.env.ENCRYPT_PATH}`;
 
@@ -32,7 +33,7 @@ export default (app: Express) => {
     })
     .setTimeout(TIMEOUT);
 
-  if (os.platform() !== "darwin") {
+  if (IS_RASPBERRY_PI) {
     const websiteURL = process.env.WEBSITE_URL;
     const credentials = {
       key: fs.readFileSync(`/etc/letsencrypt/live/${websiteURL}/privkey.pem`),
