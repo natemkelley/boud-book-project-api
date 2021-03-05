@@ -23,11 +23,14 @@ export const certbot = (app: Express) => {
 export default (app: Express) => {
   const DEFAULT_PORT = 8080;
   const SECURE_PORT = 8081;
+  const TIMEOUT = 1000 * 60 * 2; //2 minutes
 
   const httpServer = http.createServer(app);
-  httpServer.listen(DEFAULT_PORT, () => {
-    console.log("HTTP Server running on port 8080");
-  });
+  httpServer
+    .listen(DEFAULT_PORT, () => {
+      console.log("HTTP Server running on port 8080");
+    })
+    .setTimeout(TIMEOUT);
 
   if (os.platform() !== "darwin") {
     const websiteURL = process.env.WEBSITE_URL;
@@ -38,8 +41,10 @@ export default (app: Express) => {
       ),
     };
     const httpsServer = https.createServer(credentials, app);
-    httpsServer.listen(SECURE_PORT, () => {
-      console.log("HTTPS Server running on port 8081");
-    });
+    httpsServer
+      .listen(SECURE_PORT, () => {
+        console.log("HTTPS Server running on port 8081");
+      })
+      .setTimeout(TIMEOUT);
   }
 };
