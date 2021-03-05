@@ -1,8 +1,8 @@
 import puppeteer, { Page, Browser } from "puppeteer";
 import { parse as HTMLParser } from "node-html-parser";
+import os from "os";
 import { ARResult } from "./interfaces";
 import { isExactMatch, createSearchQuery } from "../helpers/index";
-
 const AR_WEBSITE_URL = "https://www.arbookfind.com/";
 
 const QUERY_PARAMETERS = {
@@ -21,22 +21,32 @@ const QUERY_PARAMETERS = {
 let BROWSER: Browser | null = null;
 
 const createBrowser = async () => {
-  // console.time("create browser");
-  BROWSER = await puppeteer.launch();
-  // console.timeEnd("create browser");
+  // ONLY RUN SPECIAL EXECUTABLE ON RASPBERRY PI
+  const options =
+    os.platform() !== "darwin"
+      ? {
+          headless: true,
+          executablePath: "/usr/bin/chromium-browser",
+          args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        }
+      : {};
+
+  console.time("create browser");
+  BROWSER = await puppeteer.launch(options);
+  console.timeEnd("create browser");
 };
 
 const createPage = async () => {
   if (!BROWSER) await createBrowser();
 
-  // console.time("create page");
+  console.time("create page");
   const page = await BROWSER.newPage();
-  // console.timeEnd("create page");
+  console.timeEnd("create page");
   return page;
 };
 
 const goToSearchPage = async (page: Page) => {
-  // console.time("go to page");
+  console.time("go to page");
   await page.goto(AR_WEBSITE_URL, {
     waitUntil: "networkidle0",
   });
@@ -48,23 +58,23 @@ const goToSearchPage = async (page: Page) => {
     });
     await page.click("#btnSubmitUserType");
   }
-  // console.timeEnd("go to page");
+  console.timeEnd("go to page");
   return page;
 };
 
 const performSearch = async (page: Page, search: string) => {
-  // console.time("performSearch");
+  console.time("performSearch");
   await page.waitForSelector(QUERY_PARAMETERS.searchBarId);
   await page.waitForSelector(QUERY_PARAMETERS.searchBtnId);
   await page.type(QUERY_PARAMETERS.searchBarId, search);
   await page.click(QUERY_PARAMETERS.searchBtnId);
   await page.waitForNavigation({ waitUntil: "networkidle0" });
-  // console.timeEnd("performSearch");
+  console.timeEnd("performSearch");
   return page;
 };
 
 async function clickOnResult(page: Page) {
-  // console.time("clickOnResult");
+  console.time("clickOnResult");
   const resultSelector = ".book-result a";
   await page
     .waitForSelector(resultSelector, {
@@ -76,7 +86,7 @@ async function clickOnResult(page: Page) {
 
   await page.click(resultSelector);
   await page.waitForNavigation({ waitUntil: "networkidle0" });
-  // console.timeEnd("clickOnResult");
+  console.timeEnd("clickOnResult");
   return page;
 }
 
@@ -133,9 +143,9 @@ const parseResults = async (
 };
 
 const closePage = async (page: Page) => {
-  // console.time("close page");
+  console.time("close page");
   await page.close();
-  // console.timeEnd("close page");
+  console.timeEnd("close page");
 };
 
 export const closeBrowser = async () => {
