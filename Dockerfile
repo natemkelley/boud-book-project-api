@@ -4,9 +4,7 @@ FROM node:14
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-
-#ADD your_ca_root.crt /usr/local/share/ca-certificates/foo.crt
-
+COPY keys/ ./keys
 
 RUN npm install && npm install tsc -g
 RUN tsc .

@@ -34,12 +34,10 @@ export default (app: Express) => {
     .setTimeout(TIMEOUT);
 
   if (IS_RASPBERRY_PI) {
-    const websiteURL = process.env.WEBSITE_URL;
+    const currentDirectory = process.cwd();
     const credentials = {
-      key: fs.readFileSync(`/etc/letsencrypt/live/${websiteURL}/privkey.pem`),
-      cert: fs.readFileSync(
-        `/etc/letsencrypt/live/${websiteURL}/fullchain.pem`
-      ),
+      key: fs.readFileSync(`${currentDirectory}/keys/privkey.pem`),
+      cert: fs.readFileSync(`${currentDirectory}/keys/fullchain.pem`),
     };
     const httpsServer = https.createServer(credentials, app);
     httpsServer
