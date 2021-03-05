@@ -68,4 +68,7 @@ kill -9 ${PID}
 
 ## Docker
 
+Added keys to folder
+docker build -t n8kel/boud-book-api .
+
 https://blog.alexellis.io/getting-started-with-docker-on-raspberry-pi/
