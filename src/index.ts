@@ -2,11 +2,13 @@ import express from "express";
 import arScoreHandler from "./handlers/ar";
 import cors from "./express/cors";
 import morgan from "./express/morgan";
+import encrypt from "./express/encrypt";
 
 const app = express();
 const port = 8080; // default port to listen
 
 cors(app);
+encrypt(app);
 morgan(app);
 
 app.get("/", async (req, res) => {

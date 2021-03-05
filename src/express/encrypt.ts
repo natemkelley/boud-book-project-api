@@ -1,12 +1,11 @@
-import express, { Express } from "express";
-import path from "path";
-import { fileURLToPath } from "url";
+require("dotenv").config();
 
-export default async (app: Express) => {
-  /*
-    const __dirname = path.dirname(fileURLToPath(import.meta.url));
-    const whereToPutFiles = `../`;
-    const absolutePath = path.resolve("wwwroot", __dirname, whereToPutFiles);
-    app.use(express.static(absolutePath, { dotfiles: "allow" }));
-*/
+import { Express } from "express";
+
+export default (app: Express) => {
+  const path = `/.well-known/acme-challenge/${process.env.ENCRYPT_PATH}`;
+  app.get(path, async (req, res) => {
+    const secretKeys = process.env.ENCRYPT_KEY;
+    res.send(secretKeys);
+  });
 };
