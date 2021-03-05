@@ -21,16 +21,6 @@ const LOG_TIME = false;
 
 // puppetter vars
 let BROWSER: Browser | null = null;
-const MAX_NUMBER_OF_REQUESTS = 8;
-let currentNumberOfRequest = 0;
-
-const checkMaxNumberOfRequest = () => {
-  if (MAX_NUMBER_OF_REQUESTS === currentNumberOfRequest) {
-    throw new Error("Server has too many requests processing");
-    return;
-  }
-  currentNumberOfRequest++;
-};
 
 const createBrowser = async () => {
   // ONLY RUN SPECIAL EXECUTABLE ON RASPBERRY PI
@@ -160,10 +150,6 @@ const closePage = async (page: Page) => {
   if (LOG_TIME) console.timeEnd("close page");
 };
 
-const reduceNumberOfRequest = () => {
-  if (currentNumberOfRequest > 0) currentNumberOfRequest--;
-};
-
 export const closeBrowser = async () => {
   BROWSER && (await BROWSER.close());
 };
@@ -173,7 +159,6 @@ export const getARscore = async (
   authorSearch?: string
 ) => {
   try {
-    checkMaxNumberOfRequest();
     const search = createSearchQuery(titleSearch, authorSearch);
     let page = await createPage();
     page = await goToSearchPage(page);
@@ -181,7 +166,6 @@ export const getARscore = async (
     page = await clickOnResult(page);
     const results = await parseResults(page, titleSearch, authorSearch);
     closePage(page);
-    reduceNumberOfRequest();
     return { ...results } as ARResult;
   } catch ({ message }) {
     return { error: message } as any;

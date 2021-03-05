@@ -13,7 +13,6 @@ morgan(app);
 app.get("/", async (req, res) => {
   const author = req.query.author as string;
   const title = req.query.title as string;
-
   if (!title) {
     res.send({ error: "no title" });
     return;
