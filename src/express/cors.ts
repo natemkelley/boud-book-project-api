@@ -35,17 +35,13 @@ export default (app: Express) => {
   const corsOptionsDelegate = (req: any, callback: any) => {
     let corsOptions;
     const origin = getOrigin(req);
-    console.log(origin);
     if (allowedOrigins.indexOf(origin) !== -1) {
-      console.log("goood!");
       corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
     } else {
-      console.log("nope");
       corsOptions = { origin: false }; // disable CORS for this request
     }
     callback(null, corsOptions); // callback expects two parameters: error and options
   };
 
-  console.log(corsOptionsDelegate);
   app.use(cors(corsOptionsDelegate));
 };
