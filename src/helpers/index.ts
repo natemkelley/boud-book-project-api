@@ -20,6 +20,7 @@ export const isTitleEqual = (title: string, searchTitle: string) => {
 };
 
 export const strip = (search = "") => {
+  search = search.replace(/ *\([^)]*\) */g, ""); // remove text inside parentheses
   search = removePunctuation(search);
   search = replaceAll("Unabridged", "", search);
   search = replaceAll("Abridged", "", search);
@@ -54,7 +55,7 @@ export const createSearchQuery = (
   titleSearch: string,
   authorSearch: string
 ) => {
-  titleSearch = `${titleSearch} (Unabridged)`;
+  titleSearch = `${strip(titleSearch)} (Unabridged)`;
   const searchQuery = authorSearch
     ? `${titleSearch} ${authorSearch}`
     : titleSearch;
