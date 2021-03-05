@@ -29,7 +29,7 @@ export default (app: Express) => {
   const httpServer = http.createServer(app);
   httpServer
     .listen(DEFAULT_PORT, () => {
-      console.log("HTTP Server running on port 8080");
+      console.log("HTTP server running on port 8080");
     })
     .setTimeout(TIMEOUT);
 
@@ -44,7 +44,7 @@ export default (app: Express) => {
     const httpsServer = https.createServer(credentials, app);
     httpsServer
       .listen(SECURE_PORT, () => {
-        console.log("HTTPS Server running on port 8081");
+        console.log("HTTPS server running on port 8081");
       })
       .setTimeout(TIMEOUT);
   }
