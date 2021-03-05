@@ -70,5 +70,6 @@ kill -9 ${PID}
 
 Added keys to folder
 docker build -t n8kel/boud-book-api .
+docker run -p 49160:8080 -d <your username>/node-web-app
 
 https://blog.alexellis.io/getting-started-with-docker-on-raspberry-pi/

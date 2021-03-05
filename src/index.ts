@@ -22,6 +22,7 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/heartbeat", async (req, res) => {
+  console.log("unce unce unce");
   res.send(true);
 });
 
