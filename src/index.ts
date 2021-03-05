@@ -1,5 +1,5 @@
 import express from "express";
-//import arScoreHandler from "./handlers/ar";
+// import arScoreHandler from "./handlers/ar";
 import cors from "./express/cors";
 import morgan from "./express/morgan";
 import encrypt from "./express/encrypt";
@@ -19,7 +19,7 @@ app.get("/", async (req, res) => {
     res.send({ error: "no title" });
     return;
   }
-  let result = "";
+  const result = "";
   // const result = await arScoreHandler(title, author).catch(err => err);
   res.send(result);
 });
