@@ -24,6 +24,7 @@ let BROWSER: Browser | null = null;
 
 const createBrowser = async () => {
   console.log(os.platform());
+  console.log(os.hostname());
   const options =
     os.platform() !== "darwin"
       ? {
