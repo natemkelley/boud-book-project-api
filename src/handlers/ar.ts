@@ -23,14 +23,19 @@ const LOG_TIME = true;
 let BROWSER: Browser | null = null;
 
 const createBrowser = async () => {
-  const options = {
-    headless: true,
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-    ],
-  };
+  console.log(os.platform());
+  const options =
+    os.platform() !== "darwin"
+      ? {
+          headless: true,
+          executablePath: "/usr/bin/chromium-browser",
+          args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage",
+          ],
+        }
+      : {};
 
   if (LOG_TIME) console.time("create browser");
   BROWSER = await puppeteer.launch(options);
