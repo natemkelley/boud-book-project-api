@@ -23,9 +23,9 @@ export const strip = (search = "") => {
   search = search.replace(/ *\([^)]*\) */g, ""); // remove text inside parentheses
   search = removePunctuation(search);
   search = search.toLowerCase();
-  search = replaceAll("Unabridged", "", search);
-  search = replaceAll("Abridged", "", search);
-  search = replaceAll("The", "", search);
+  search = replaceAll("unabridged", "", search);
+  search = replaceAll("abridged", "", search);
+  search = replaceAll("the", "", search);
   search = replaceAll("-", " ", search); // short dash
   search = replaceAll("—", " ", search); // long dash
   search = shoetest.simplify(search) || "";
@@ -97,6 +97,14 @@ function test() {
   searchTitle = "Moby-Dick, Or The Whale (Unabridged)";
   author = "Melville, Herman";
   searchAuthor = "Herman Melville";
+
+  console.log(isExactMatch(searchTitle, title, author, searchAuthor));
+
+  //
+  title = "The Adventures of Huckleberry Finn (Unabridged)";
+  searchTitle = "Adventures of Huckleberry Finn";
+  author = "Twain, Mark";
+  searchAuthor = "Mark Twain";
 
   console.log(isExactMatch(searchTitle, title, author, searchAuthor));
 }
