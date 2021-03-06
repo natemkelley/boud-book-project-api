@@ -8,6 +8,8 @@ This API is used to scrub ARs website for their points
 
 ## SSL Certificate
 
+Before completing the next instructions make sure that you have a valid duckdns ip address.
+
 1. I followed these instructions up until step 7 https://certbot.eff.org/lets-encrypt/pip-other
 2. Did a manual install for the certifcate making sure to copy the key and path
 
@@ -56,6 +58,8 @@ certbot certonly --manual
     });
   }
 ```
+
+6. In order to dockerize the application I had to then move the keys the `./keys` folder. This folder is not synced for good reason.
 
 ## Trouble Shooting
 
