@@ -22,12 +22,13 @@ export const isTitleEqual = (title: string, searchTitle: string) => {
 export const strip = (search = "") => {
   search = search.replace(/ *\([^)]*\) */g, ""); // remove text inside parentheses
   search = removePunctuation(search);
+  search = search.toLowerCase();
   search = replaceAll("Unabridged", "", search);
   search = replaceAll("Abridged", "", search);
+  search = replaceAll("The", "", search);
   search = replaceAll("-", " ", search); // short dash
   search = replaceAll("—", " ", search); // long dash
   search = shoetest.simplify(search) || "";
-  search = search.toLowerCase();
   return search.trim();
 };
 
@@ -99,4 +100,4 @@ function test() {
 
   console.log(isExactMatch(searchTitle, title, author, searchAuthor));
 }
-// test();
+test();
