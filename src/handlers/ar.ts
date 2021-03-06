@@ -19,14 +19,11 @@ const QUERY_PARAMETERS = {
 
 const LOG_TIME = true;
 
-// puppetter vars
 let BROWSER: Browser | null = null;
 
 const createBrowser = async () => {
-  console.log(os.platform());
-  console.log(os.hostname());
   const options =
-    os.platform() !== "darwin"
+    os.hostname() === "raspberrypi"
       ? {
           headless: true,
           executablePath: "/usr/bin/chromium-browser",
@@ -36,7 +33,14 @@ const createBrowser = async () => {
             "--disable-dev-shm-usage",
           ],
         }
-      : {};
+      : {
+          headless: true,
+          args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage",
+          ],
+        };
 
   if (LOG_TIME) console.time("create browser");
   BROWSER = await puppeteer.launch(options);
