@@ -52,7 +52,7 @@ const goToSearchPage = async (page: Page) => {
     waitUntil: "networkidle0",
   });
 
-  await page.waitForSelector("#btnSubmitUserType");
+  await page.screenshot({ path: "example0.png" });
 
   // handle cookie page
   if (page.url().includes("UserType.aspx")) {
@@ -62,6 +62,8 @@ const goToSearchPage = async (page: Page) => {
       (document.querySelector("#btnSubmitUserType") as any).click();
     });
   }
+  await page.screenshot({ path: "example1.png" });
+
   if (LOG_TIME) console.timeEnd("go to page");
   return page;
 };
@@ -70,9 +72,13 @@ const performSearch = async (page: Page, search: string) => {
   if (LOG_TIME) console.time("performSearch");
   await page.waitForSelector(QUERY_PARAMETERS.searchBarId);
   await page.waitForSelector(QUERY_PARAMETERS.searchBtnId);
+  await page.screenshot({ path: "example2.png" });
+
   await page.type(QUERY_PARAMETERS.searchBarId, search);
   await page.click(QUERY_PARAMETERS.searchBtnId);
   await page.waitForNavigation({ waitUntil: "networkidle0" });
+  await page.screenshot({ path: "example3.png" });
+
   if (LOG_TIME) console.timeEnd("performSearch");
   return page;
 };
@@ -87,9 +93,12 @@ async function clickOnResult(page: Page) {
     .catch(() => {
       throw new Error("no results");
     });
+  await page.screenshot({ path: "example4.png" });
 
   await page.click(resultSelector);
   await page.waitForNavigation({ waitUntil: "networkidle0" });
+  await page.screenshot({ path: "example5.png" });
+
   if (LOG_TIME) console.timeEnd("clickOnResult");
   return page;
 }
