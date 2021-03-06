@@ -24,6 +24,7 @@ let BROWSER: Browser | null = null;
 
 const createBrowser = async () => {
   const options = {
+    headless: true,
     args: [
       "--no-sandbox",
       "--disable-setuid-sandbox",
@@ -39,7 +40,6 @@ const createBrowser = async () => {
 const createPage = async () => {
   if (!BROWSER) await createBrowser();
 
-  console.log("trying to create page?");
   if (LOG_TIME) console.time("create page");
   const page = await BROWSER.newPage();
   if (LOG_TIME) console.timeEnd("create page");
@@ -52,12 +52,15 @@ const goToSearchPage = async (page: Page) => {
     waitUntil: "networkidle0",
   });
 
+  await page.waitForSelector("#btnSubmitUserType");
+
   // handle cookie page
   if (page.url().includes("UserType.aspx")) {
+    //docker required evaulate
     await page.evaluate(() => {
       (document.getElementById("radTeacher") as any).checked = true;
+      (document.querySelector("#btnSubmitUserType") as any).click();
     });
-    await page.click("#btnSubmitUserType");
   }
   if (LOG_TIME) console.timeEnd("go to page");
   return page;
