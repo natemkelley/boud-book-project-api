@@ -17,7 +17,7 @@ const QUERY_PARAMETERS = {
   searchBtnId: "#ctl00_ContentPlaceHolder1_btnDoIt",
 };
 
-const LOG_TIME = true;
+const LOG_TIME = false;
 
 let BROWSER: Browser | null = null;
 
