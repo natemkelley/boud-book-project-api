@@ -9,14 +9,24 @@ export const isAuthorEqual = (author: string, searchAuthor: string) => {
   const authorArray = author.split(" ");
   const matchedParts = authorArray.filter(part => searchAuthor.includes(part));
 
+  console.log(author, searchAuthor);
+  console.log(authorArray, matchedParts);
   if (author === searchAuthor) return true;
   if (authorArray.length === matchedParts.length) return true;
+  if (removeAllSpacing(author) === removeAllSpacing(searchAuthor)) return true;
 
   return false;
 };
 
 export const isTitleEqual = (title: string, searchTitle: string) => {
-  return title === searchTitle;
+  return (
+    title === searchTitle ||
+    removeAllSpacing(title) === removeAllSpacing(searchTitle)
+  );
+};
+
+export const removeAllSpacing = (search: string) => {
+  return replaceAll(" ", "", search);
 };
 
 export const strip = (search = "") => {
@@ -105,6 +115,13 @@ function test() {
   searchTitle = "Adventures of Huckleberry Finn";
   author = "Twain, Mark";
   searchAuthor = "Mark Twain";
+
+  console.log(isExactMatch(searchTitle, title, author, searchAuthor));
+
+  title = "The Island of Dr. Moreau (Unabridged)";
+  searchTitle = "The Island of Dr. Moreau (Unabridged)";
+  author = "Wells, H.G.";
+  searchAuthor = "H G Wells";
 
   console.log(isExactMatch(searchTitle, title, author, searchAuthor));
 }
